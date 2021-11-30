@@ -15,9 +15,12 @@ public class MyThreadPoolExecutor extends ThreadPoolExecutor {
     @Override
     public void execute(Runnable command) {
         if (command != null) {
-            for (int i = 0; i < 3; i++) {
+            Repeat repeat = command.getClass().getAnnotation(Repeat.class);
+            for (int i = 0; i < repeat.value(); i++) {
                 super.execute(command);
             }
         }
     }
 }
+
+

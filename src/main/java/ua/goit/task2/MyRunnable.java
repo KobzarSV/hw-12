@@ -1,6 +1,6 @@
 package main.java.ua.goit.task2;
 
-@Repeat(3)
+@Repeat(6)
 public class MyRunnable implements Runnable {
     @Override
     public void run() {

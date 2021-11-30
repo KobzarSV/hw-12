@@ -1,5 +1,7 @@
 package main.java.ua.goit.task1;
 
+import java.util.Locale;
+import java.util.Scanner;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
@@ -9,38 +11,44 @@ public class WaterMolecules {
     static Semaphore semaphoreOxygen = new Semaphore(1);
     private static CyclicBarrier barrier = new CyclicBarrier(3);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
+        Scanner scanner = new Scanner(System.in);
 
-        for (int i = 0; i < 6; i++) {
-            Thread hydrogen = new Thread(() -> {
-                try {
-                    releaseHydrogen();
-                } catch (InterruptedException | BrokenBarrierException e) {
-                    e.printStackTrace();
-                }
-            });
-            hydrogen.start();
-        }
+        System.out.println("Introduce hydrogen (H) or oxygen (O) molecules to form H2O: ");
 
-        for (int i = 0; i < 3; i++) {
-            Thread oxygen = new Thread(() -> {
-                try {
-                    releaseOxygen();
-                } catch (InterruptedException | BrokenBarrierException e) {
-                    e.printStackTrace();
-                }
-            });
-            oxygen.start();
+        String string = scanner.nextLine().toUpperCase(Locale.ROOT);
+
+        for (int i = 0; i < string.length(); i++) {
+            char ch = string.charAt(i);
+            if (ch == 'H') {
+                Thread hydrogen = new Thread(() -> {
+                    try {
+                        releaseHydrogen();
+                    } catch (InterruptedException | BrokenBarrierException e) {
+                        e.printStackTrace();
+                    }
+                });
+                hydrogen.start();
+            } else if (ch == 'O') {
+                Thread oxygen = new Thread(() -> {
+                    try {
+                        releaseOxygen();
+                    } catch (InterruptedException | BrokenBarrierException e) {
+                        e.printStackTrace();
+                    }
+                });
+                oxygen.start();
+            }
         }
+        scanner.close();
     }
 
     public static void releaseHydrogen() throws InterruptedException, BrokenBarrierException {
         semaphoreHydrogen.acquire();
         barrier.await();
         System.out.println("H");
-        Thread.sleep(3000);
+        Thread.sleep(2000);
         semaphoreHydrogen.release();
-
     }
 
     public static void releaseOxygen() throws InterruptedException, BrokenBarrierException {
@@ -48,7 +56,7 @@ public class WaterMolecules {
         barrier.await();
         Thread.sleep(100);
         System.out.println("O");
-        Thread.sleep(3000);
+        Thread.sleep(2000);
         semaphoreOxygen.release();
     }
 }
